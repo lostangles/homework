@@ -2,8 +2,8 @@
  * The <tt>BigNum</tt> class represents any length non-negative integer, and
  * supports basic operations on them. <tt>BigNum</tt> objects are immutable.
  *
- * @author Ted Krovetz
- * @version Feb 2, 2015
+ * @author Ted Krovetz, Brandon Byrne
+ * @version Feb 6, 2015
  */
 
 public class BigNum {
