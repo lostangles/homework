@@ -5,6 +5,8 @@
  * @author Ted Krovetz
  * @version Feb 2, 2015
  */
+import java.util.ArrayList;
+
 public class BigNum {
 
 	// F i e l d s
@@ -15,7 +17,7 @@ public class BigNum {
 
 	/**
 	 * Constructs a <tt>BigNum</tt> from a non-empty String of digits.
-	 * 
+	 *
 	 * @param num
 	 *            The string to be interpreted.
 	 * @throws IllegalArgumentException
@@ -37,7 +39,7 @@ public class BigNum {
 
 	/**
 	 * Constructs a <tt>BigNum</tt> from a non-negative integer.
-	 * 
+	 *
 	 * @param num
 	 *            The non-negative integer to be interpreted.
 	 * @throws IllegalArgumentException
@@ -94,6 +96,59 @@ public class BigNum {
 	}
 
 	/**
+	 * Multiply two <tt>BigNum</tt> objects' values together and returns a new
+	 * <tt>BigNum</tt> object with the resulting value.
+	 *
+	 * @param other
+	 *            this and other objects get multiplied together
+	 * @return a new BigNum with the resulting value
+	 */
+	public BigNum mult(BigNum other) {
+		// Make shorter refer to the shorter num, longer to the longer num
+		String shorter = other.num;
+		String longer = this.num;
+		BigNum total = new BigNum();
+
+		if (this.num.length() < other.num.length()) {
+			shorter = this.num;
+			longer = other.num;
+		}
+		// Prepend zeros to make shorter as long as longer
+		while (shorter.length() < longer.length()) {
+			shorter = "0" + shorter;
+		}
+
+		// Add columns like we did in grade school
+		int carry = 0;
+		String result = "";
+		int counter = 0;
+
+		for (int i = shorter.length() - 1; i >= 0; i--) {
+			result = "";
+			carry = 0;
+			
+			// Add leading zeroes 
+			for (int k = 0; k < counter; k++) {
+				if (i != 0) result += "0";
+			}
+			for (int j = longer.length() - 1; j >= 0; j--) {
+				int temp = (Character.getNumericValue(shorter.charAt(i)) * Character
+						.getNumericValue(longer.charAt(j))) + carry;
+				result = (temp % 10) + result;
+				carry = temp / 10;
+			}
+			if (carry >= 1) {
+				result = carry + result;
+			}
+			counter++;
+			System.out.println(counter);
+			total = total.add(new BigNum(result));
+		}
+		return total;
+		// return new BigNum(result);
+	}
+
+	/**
 	 * Returns a string representation of the number. No leading zeros will
 	 * exist unless the overall value is zero.
 	 *
@@ -118,14 +173,20 @@ public class BigNum {
 		BigNum b = new BigNum();
 		BigNum c = a.add(b);
 		System.out.println(c.toString().equals("0"));
-		a = new BigNum("999");
-		b = new BigNum("101");
+		a = new BigNum("5");
+		b = new BigNum("0");
 		c = a.add(b);
-		System.out.println(c.toString().equals("1100"));
+		System.out.println(c.toString().equals("5"));
 		a = new BigNum("237468273643278");
 		b = new BigNum("87326487236437826");
 		c = a.add(b);
 		System.out.println(c.toString().equals("87563955510081104"));
+		a = new BigNum("123456789");
+		b = new BigNum("54321");
+		c = a.mult(b);
+		System.out.println(c.toString().equals("8901") + " C is :"
+				+ c.toString());
+
 	}
 
 }
