@@ -5,13 +5,12 @@
  * @author Ted Krovetz
  * @version Feb 2, 2015
  */
-import java.util.ArrayList;
 
 public class BigNum {
 
 	// F i e l d s
 
-	private String num; // Representation of our number
+	private final String num; // Representation of our number
 
 	// C o n s t r u c t o r s
 
@@ -26,15 +25,15 @@ public class BigNum {
 	 *             if num is null
 	 */
 	public BigNum(String num) {
-		for (int i = 0; i < num.length(); i++) {
-			if (!Character.isDigit(num.charAt(i))) {
+			for (int i = 0; i < num.length(); i++) {
+				if (!Character.isDigit(num.charAt(i))) {
+					throw new IllegalArgumentException();
+				}
+			}
+			if (num.length() == 0) {
 				throw new IllegalArgumentException();
 			}
-		}
-		if (num.length() == 0) {
-			throw new IllegalArgumentException();
-		}
-		this.num = num;
+			this.num = num;
 	}
 
 	/**
@@ -46,107 +45,104 @@ public class BigNum {
 	 *             if num is negative
 	 */
 	public BigNum(int num) {
-		// If num<0, redirected constructor will throw exception due to "-"
-		this("" + num);
+			// If num<0, redirected constructor will throw exception due to "-"
+			this("" + num);
 	}
 
 	/**
 	 * Constructs a <tt>BigNum</tt> with value zero.
 	 */
 	public BigNum() {
-		num = "0";
+			num = "0";
 	}
 
 	// P u b l i c M e t h o d s
 
 	/**
-	 * Adds two <tt>BigNum</tt> objects' values together and returns a new
-	 * <tt>BigNum</tt> object with the resulting value.
+	 * Adds two <tt>BigNum</tt> objects' values together and returns a new <tt>BigNum</tt> object with the resulting value.
 	 *
 	 * @param other
 	 *            this and other objects get added together
 	 * @return a new BigNum with the resulting value
 	 */
-	public BigNum add(BigNum other) {
-		// Make shorter refer to the shorter num, longer to the longer num
-		String shorter = other.num;
-		String longer = this.num;
-		if (this.num.length() < other.num.length()) {
-			shorter = this.num;
-			longer = other.num;
+	public BigNum add(BigNum other)
+		{
+			// Make shorter refer to the shorter num, longer to the longer num
+			String shorter = other.num;
+			String longer = this.num;
+			if (this.num.length() < other.num.length()) {
+				shorter = this.num;
+				longer = other.num;
+			}
+			// Prepend zeros to make shorter as long as longer
+			while (shorter.length() < longer.length()) {
+				shorter = "0" + shorter;
+			}
+			// Add columns like we did in grade school
+			int carry = 0;
+			String result = "";
+			for (int i = shorter.length() - 1; i >= 0; i--) {
+				final int temp = Character.getNumericValue(shorter.charAt(i))
+						+ Character.getNumericValue(longer.charAt(i)) + carry;
+				result = (temp % 10) + result;
+				carry = temp / 10;
+			}
+			// Handle carry-out, if there is one. Return result
+			if (carry == 1) {
+				result = "1" + result;
+			}
+			return new BigNum(result);
 		}
-		// Prepend zeros to make shorter as long as longer
-		while (shorter.length() < longer.length()) {
-			shorter = "0" + shorter;
-		}
-		// Add columns like we did in grade school
-		int carry = 0;
-		String result = "";
-		for (int i = shorter.length() - 1; i >= 0; i--) {
-			int temp = Character.getNumericValue(shorter.charAt(i))
-					+ Character.getNumericValue(longer.charAt(i)) + carry;
-			result = (temp % 10) + result;
-			carry = temp / 10;
-		}
-		// Handle carry-out, if there is one. Return result
-		if (carry == 1) {
-			result = "1" + result;
-		}
-		return new BigNum(result);
-	}
 
 	/**
-	 * Multiply two <tt>BigNum</tt> objects' values together and returns a new
-	 * <tt>BigNum</tt> object with the resulting value.
+	 * Multiply two <tt>BigNum</tt> objects' values together and returns a new <tt>BigNum</tt> object with the resulting value.
 	 *
 	 * @param other
 	 *            this and other objects get multiplied together
 	 * @return a new BigNum with the resulting value
 	 */
-	public BigNum mult(BigNum other) {
-		// Make shorter refer to the shorter num, longer to the longer num
-		String shorter = other.num;
-		String longer = this.num;
-		BigNum total = new BigNum();
+	public BigNum mult(BigNum other)
+		{
+			// Make shorter refer to the shorter num, longer to the longer num
+			String shorter = other.num;
+			String longer = this.num;
+			BigNum total = new BigNum();
 
-		if (this.num.length() < other.num.length()) {
-			shorter = this.num;
-			longer = other.num;
-		}
-		// Prepend zeros to make shorter as long as longer
-		while (shorter.length() < longer.length()) {
-			shorter = "0" + shorter;
-		}
+			if (this.num.length() < other.num.length()) {
+				shorter = this.num;
+				longer = other.num;
+			}
 
-		// Add columns like we did in grade school
-		int carry = 0;
-		String result = "";
-		int counter = 0;
+			// Add columns like we did in grade school
+			int carry = 0;
+			String result = "";
+			int zeroes = 0;
 
-		for (int i = shorter.length() - 1; i >= 0; i--) {
-			result = "";
-			carry = 0;
-			
-			// Add leading zeroes 
-			for (int k = 0; k < counter; k++) {
-				if (i != 0) result += "0";
+			for (int i = shorter.length() - 1; i >= 0; i--) {
+				result = "";
+				carry = 0;
+
+				// Add leading zeroes 
+				for (int k = 0; k < zeroes; k++) {
+					result += "0";
+				}
+				
+				for (int j = longer.length() - 1; j >= 0; j--) {
+					final int temp = (Character.getNumericValue(shorter
+							.charAt(i)) * Character.getNumericValue(longer
+							.charAt(j)))
+							+ carry;
+					result = (temp % 10) + result;
+					carry = temp / 10;
+				}
+				if (carry >= 1) {
+					result = carry + result;
+				}
+				zeroes++;
+				total = total.add(new BigNum(result));
 			}
-			for (int j = longer.length() - 1; j >= 0; j--) {
-				int temp = (Character.getNumericValue(shorter.charAt(i)) * Character
-						.getNumericValue(longer.charAt(j))) + carry;
-				result = (temp % 10) + result;
-				carry = temp / 10;
-			}
-			if (carry >= 1) {
-				result = carry + result;
-			}
-			counter++;
-			System.out.println(counter);
-			total = total.add(new BigNum(result));
+			return total;
 		}
-		return total;
-		// return new BigNum(result);
-	}
 
 	/**
 	 * Returns a string representation of the number. No leading zeros will
@@ -155,38 +151,40 @@ public class BigNum {
 	 * @return String representation of the BigNum
 	 */
 	@Override
-	public String toString() {
-		return num;
-	}
+	public String toString()
+		{
+			return num;
+		}
 
 	/** Used only for unit testing. When run, should output only trues. */
-	public static void main(String[] args) {
-		// Test constructors
-		BigNum test = new BigNum("123");
-		System.out.println(test.toString().equals("123"));
-		test = new BigNum(123);
-		System.out.println(test.toString().equals("123"));
-		test = new BigNum();
-		System.out.println(test.toString().equals("0"));
-		// Test addition
-		BigNum a = new BigNum();
-		BigNum b = new BigNum();
-		BigNum c = a.add(b);
-		System.out.println(c.toString().equals("0"));
-		a = new BigNum("5");
-		b = new BigNum("0");
-		c = a.add(b);
-		System.out.println(c.toString().equals("5"));
-		a = new BigNum("237468273643278");
-		b = new BigNum("87326487236437826");
-		c = a.add(b);
-		System.out.println(c.toString().equals("87563955510081104"));
-		a = new BigNum("123456789");
-		b = new BigNum("54321");
-		c = a.mult(b);
-		System.out.println(c.toString().equals("8901") + " C is :"
-				+ c.toString());
+	public static void main(String[] args)
+		{
+			// Test constructors
+			BigNum test = new BigNum("123");
+			System.out.println(test.toString().equals("123"));
+			test = new BigNum(123);
+			System.out.println(test.toString().equals("123"));
+			test = new BigNum();
+			System.out.println(test.toString().equals("0"));
+			// Test addition
+			BigNum a = new BigNum();
+			BigNum b = new BigNum();
+			BigNum c = a.add(b);
+			System.out.println(c.toString().equals("0"));
+			a = new BigNum("5");
+			b = new BigNum("0");
+			c = a.add(b);
+			System.out.println(c.toString().equals("5"));
+			a = new BigNum("237468273643278");
+			b = new BigNum("87326487236437826");
+			c = a.add(b);
+			System.out.println(c.toString().equals("87563955510081104"));
+			a = new BigNum("237468273643278");
+			b = new BigNum("87326487236437826");
+			c = a.mult(b);
+			System.out.println(c.toString().equals(
+					"20737270167368641268575749833628"));
 
-	}
+		}
 
 }
