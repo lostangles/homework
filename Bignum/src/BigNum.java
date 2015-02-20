@@ -96,7 +96,8 @@ public class BigNum {
 
 	/**
 	 * Multiply two <tt>BigNum</tt> objects' values together and returns a new
-	 * <tt>BigNum</tt> object with the resulting value.
+	 * <tt>BigNum</tt> object with the resulting value. Some code borrowed from
+	 * add method.
 	 *
 	 * @param other
 	 *            this and other objects get multiplied together
@@ -125,7 +126,9 @@ public class BigNum {
 			result = "";
 			carry = 0;
 
-			// Add trailing zeroes
+
+			//appends zeroes for every digit of the shorter number that we are multiplying.  
+			//TODO: Probably a better/more efficient way to do this.			
 			for (int k = 0; k < zeroes; k++) {
 				result += "0";
 			}
@@ -166,15 +169,18 @@ public class BigNum {
 	 */
 	public boolean less(BigNum other) {
 		boolean isLess = false;
-		// Skip potentially long for loop if the number is simply a power of 10 or more larger.
+		// Skip potentially long for loop if the number is simply a power of 10
+		// or more larger.
 		if (this.num.length() < other.num.length()) {
 			isLess = true;
 		} else if (this.num.length() == other.num.length()) {
-			// Loop through comparing values from MSB to LSB, if any isLess is true
-			for (int i = 0; i <= this.num.length() - 1 ; i++) {
+			// Loop through comparing values from MSB to LSB, if any isLess is
+			// true
+			for (int i = 0; i <= (this.num.length() - 1); i++) {
 				if (this.num.length() < other.num.length()) {
 					isLess = true;
-					i = this.num.length();  // Break the for loop since no reason to continue
+					i = this.num.length(); // Break the for loop since no reason
+											// to continue
 				}
 			}
 		}
@@ -208,7 +214,10 @@ public class BigNum {
 		c = a.mult(b);
 		System.out.println(c.toString().equals(
 				"20737270167368641268575749833628"));
+		
 		System.out.println(a.less(b));
+		b = new BigNum("0");
+		System.out.println(!a.less(b));
 
 	}
 
