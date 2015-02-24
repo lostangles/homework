@@ -214,7 +214,6 @@ public class BigNum {
 		c = a.mult(b);
 		System.out.println(c.toString().equals(
 				"20737270167368641268575749833628"));
-		
 		System.out.println(a.less(b));
 		b = new BigNum("0");
 		System.out.println(!a.less(b));
