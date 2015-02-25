@@ -13,7 +13,7 @@
 
 import java.util.NoSuchElementException;
 
-public class MyDeque<E> {
+public class MyDeque<E> implements IDeque<E> {
 
 	// F I E L D S
 	Node<E> head;
@@ -28,7 +28,7 @@ public class MyDeque<E> {
 	 * specified type in order to assign a tail and head 	 
 	 */
 	public MyDeque() {
-		Node<E> dummy = new Node();
+		Node<E> dummy = new Node<E>();
 		this.tail = dummy;
 		this.head = this.tail;
 		size = 0;
@@ -103,10 +103,12 @@ public class MyDeque<E> {
 	/**
 	 * @return the value of the <tt>Node</tt> at the Back
 	 */
+	/** Method was used to unit test, commented out since it's not part of IDeque
 	public E getLast() {
 		return tail.get();
 	}
-
+	*/
+			
 	// U n i t   t e s t s
 	public static void main(String[] args) {
 		MyDeque<Integer> deck = new MyDeque<Integer>();
@@ -118,9 +120,9 @@ public class MyDeque<E> {
 		deck.addFirst(8);
 		deck.addFirst(2);
 		System.out.println(deck.getFirst() == 2);
-		System.out.println(deck.getLast() == 1);
+		//getLast() was used for unit test, not part of IDeque		System.out.println(deck.getLast() == 1);
 		deck.addLast(9);
-		System.out.println(deck.getLast() == 9);
+		//getLast() was used for unit test, not part of IDeque		System.out.println(deck.getLast() == 9);
 		for (int i = 0; i < 5; i++) {
 			System.out.println(deck.removeFirst());
 		}
@@ -140,11 +142,12 @@ class Node<E> {
 	private Node<E> right;
 	private E item;
 	
-	public Node () {
+	//Empty constructor so we can make dummy nodes.
+	Node () {
 		
 	}
 	
-	public Node (E item) {
+	Node (E item) {
 		this.item = item;		
 	}
 	
@@ -152,22 +155,25 @@ class Node<E> {
 		return this.item + "";
 	}
 	
-	public E get() {
+	E get() {
 		return item;
 	}
 	
-	public Node<E> right () {
+	Node<E> right () {
 		return right;
 	}
-
-	public void addLeft (Node<E> Node) {
-		this.left = Node;
-		Node.right = this;
+	
+	Node<E> left () {
+		return left;
+	}
+    void addLeft (Node<E> node) {
+		this.left = node;
+		node.right = this;
 	}
 	
-	public void addRight (Node<E> Node) {
-		this.right = Node;
-		Node.left = this;
+	void addRight (Node<E> node) {
+		this.right = node;
+		node.left = this;
 	}
 
 	
