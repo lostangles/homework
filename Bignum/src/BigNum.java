@@ -10,8 +10,8 @@ public class BigNum {
 
 	// F i e l d s
 
-	private final String num; // Representation of our number
-
+	private String num; // Representation of our number
+	private boolean isNegative = false;
 	// C o n s t r u c t o r s
 
 	/**
@@ -95,6 +95,59 @@ public class BigNum {
 	}
 
 	/**
+	 * Subtracts two <tt>BigNum</tt> objects' values together and returns a new
+	 * <tt>BigNum</tt> object with the resulting value.
+	 * TODO: Subtract gets iffy because it has the potential to deal with negative 
+	 * numbers as a result.  Current iteration of BigNum does not take into account 
+	 * sign.  Currently if a - b where b is bigger than a, it will spit out the result
+	 * with a negative sign.  This is purely for visualization and is done in toString,
+	 * the - sign does not do anything for the value.  ie:  BigNum a = 5 - 10 
+	 * will toString and return-5, but any future action on this BigNum will still 
+	 * treat it as just a 5. 
+	 *
+	 * @param other
+	 *            this and other objects get added together
+	 * @return a new BigNum with the resulting value
+	 */
+	public BigNum sub(BigNum other) {
+		// Make shorter refer to the shorter num, longer to the longer num
+		String shorter = other.num;
+		String longer = this.num;
+		boolean isNeg = false;
+		if (this.less(other)) {
+			shorter = this.num;
+			longer = other.num;
+			isNeg = true;
+		}
+		// Prepend zeros to make shorter as long as longer
+		while (shorter.length() < longer.length()) {
+			shorter = "0" + shorter;
+		}
+		// Add columns like we did in grade school
+		int borrow = 0;
+		String result = "";
+		for (int i = shorter.length() - 1; i >= 0; i--) {
+			int temp=0;
+			int tempLonger = Character.getNumericValue(longer.charAt(i));
+			if (borrow == 1) tempLonger -= 1;
+			int tempShorter = Character.getNumericValue(shorter.charAt(i));
+			if (  ( Character.getNumericValue(longer.charAt(i)) <  Character.getNumericValue(shorter.charAt(i)) ) || (tempLonger < 0 ) )
+			{
+				temp = (tempLonger +10) - tempShorter;		
+				borrow = 1;				
+			}
+			else
+			{
+			borrow = 0;
+			temp = tempLonger - tempShorter;
+			}
+			result = (temp) + result;
+		}
+		BigNum res = new BigNum(result);
+		res.isNegative = true;
+		return res;
+	}
+	/**
 	 * Multiply two <tt>BigNum</tt> objects' values together and returns a new
 	 * <tt>BigNum</tt> object with the resulting value. Some code borrowed from
 	 * add method.
@@ -156,6 +209,11 @@ public class BigNum {
 	 */
 	@Override
 	public String toString() {
+		//take care of negative sign
+		num = num.replaceFirst("^0+(?!$)", "");
+		if (isNegative ) {
+			num = "-" + num;
+		}
 		return num;
 	}
 
@@ -171,7 +229,7 @@ public class BigNum {
 		boolean isLess = false;
 		// Skip potentially long for loop if the number is simply a power of 10
 		// or more larger.
-		if (this.num.length() < other.num.length()) {
+		if (    (this.num.length() < other.num.length()) || ( this.isNegative == true && other.isNegative == false)  ) {
 			isLess = true;
 		} else if (this.num.length() == other.num.length()) {
 			// Loop through comparing values from MSB to LSB, if any isLess is
@@ -217,7 +275,10 @@ public class BigNum {
 		System.out.println(a.less(b));
 		b = new BigNum("0");
 		System.out.println(!a.less(b));
-
+		a = new BigNum("100");
+		b = new BigNum("1000");
+		c = a.sub(b);
+		System.out.println(c);
 	}
 
 }
