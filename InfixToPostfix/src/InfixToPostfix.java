@@ -3,7 +3,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * Class documentation goes here. Write more than you did last time.
+ * <tt>InfixToPostfix</tt> is a class that parses a standard mathematical
+ * argument into a "post fix" state that is much easier to work with for
+ * computation. This class implements the Shunting yard algorithm
+ * ( http://en.wikipedia.org/wiki/Shunting-yard_algorithm )
+ * Class usage consists of initializing a InfixToPostfix object
+ * with the mathematical equation as the argument
+ *
+ * @author Brandon Byrne
+ * @version Mar 14, 2015
  */
 public class InfixToPostfix implements Iterable<String> {
 
@@ -12,6 +20,13 @@ public class InfixToPostfix implements Iterable<String> {
 	private String operators = "()+-/%*^";
 	private String validArgs = "()+-/%*^0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ";
 
+	/**
+	 * Constructs a <tt>InfixToPostfix</tt> object. Mathematical argument
+	 * must be included upon object initialization. Equation in the form of:
+	 * new InfixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
+	 * Valid arguments consist of: 0-9, A-z, ()+-/%*^ operators. If () are mismatched
+	 * exception will be thrown.
+	 */
 	public InfixToPostfix(String infix) {
 		testArgs(infix);
 		parse(infix);
@@ -34,7 +49,9 @@ public class InfixToPostfix implements Iterable<String> {
 	}
 
 	/**
-	 * Mehtod documentation goes here
+	 * Allows InfixToPostfix to be iteratable. Creating an iterator
+	 * will allow you to cycle through all the Strings inside
+	 * the postfix queue.
 	 */
 	@Override
 	public Iterator<String> iterator() {
@@ -61,10 +78,12 @@ public class InfixToPostfix implements Iterable<String> {
 
 				if (currChar.equals("("))
 					opStack.addFirst(currChar);
-				if (currChar.equals("*") || currChar.equals("/")) {
+				if (currChar.equals("*") || currChar.equals("/")
+						|| currChar.equals("%")) {
 					if (!(opStack.isEmpty()))
 						while (opStack.peek().equals("*")
-								|| opStack.peek().equals("/")) {
+								|| opStack.peek().equals("/")
+								|| currChar.equals("%")) {
 							postfix.addLast(opStack.pop());
 						}
 					opStack.addFirst(currChar);
@@ -74,7 +93,8 @@ public class InfixToPostfix implements Iterable<String> {
 						while (opStack.peek().equals("+")
 								|| opStack.peek().equals("-")
 								|| opStack.peek().equals("*")
-								|| opStack.peek().equals("/")) {
+								|| opStack.peek().equals("/")
+								|| currChar.equals("%")) {
 							postfix.addLast(opStack.pop());
 						}
 					opStack.addFirst(currChar);
@@ -102,6 +122,7 @@ public class InfixToPostfix implements Iterable<String> {
 
 	}
 
+	// Embedded unit test
 	public static void main(String[] args) {
 		// Simple embedded unit-test for InfixToPostfix
 		InfixToPostfix test = new InfixToPostfix(
@@ -114,6 +135,7 @@ public class InfixToPostfix implements Iterable<String> {
 		}
 		System.out.println(test2.equals("3 4 2 * 1 5 - 2 3 ^ ^ / + "));
 
+		//Test handling of illegal arguments
 		try {
 			InfixToPostfix test3 = new InfixToPostfix("$%#(&$*(@");
 		} catch (IllegalArgumentException e) {
@@ -123,6 +145,7 @@ public class InfixToPostfix implements Iterable<String> {
 			System.out.println("false - Wrong exception type thrown");
 		}
 
+		//Test argument handling of mismatched ()'s
 		try {
 			InfixToPostfix test3 = new InfixToPostfix("(4+5+3))");
 		} catch (IllegalArgumentException e) {
