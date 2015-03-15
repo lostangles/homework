@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 /**
  * A <tt>MyDeque</tt> is a list of items with restrictions on how it can be manipulated.
  * Items can be added to either end of the list but can only be removed from
@@ -11,7 +13,6 @@
  * @version Feb 22, 2015
  */
 
-import java.util.NoSuchElementException;
 
 public class MyDeque<E> implements IDeque<E> {
 
@@ -42,6 +43,8 @@ public class MyDeque<E> implements IDeque<E> {
 	 */
 	public void addFirst(E item) {
 		Node<E> oldHead = head;
+		if (oldHead == null)
+			oldHead = new Node<E>();
 		head = new Node<E>(item);
 		oldHead.addLeft(head);
 		if (size == 0) {
@@ -68,7 +71,8 @@ public class MyDeque<E> implements IDeque<E> {
 	
 	/**
 	 * Removes the first <tt>Node</tt> object from MyDeque
-	 *
+	 * Throws a NoSuchElementException if the deque is empty
+	 * also returns value of removed Node
 	 * @return the value of the <tt>Node</tt> that was removed
 	 */
 	public E removeFirst() {
@@ -82,7 +86,7 @@ public class MyDeque<E> implements IDeque<E> {
 	}
 
 	/**
-	 * Evaluates <tt>MyDeque</tt> object to see if it's empty
+	 * Evaluates <tt>MyDeque</tt> object to see if it's empty, returns true if it is
 	 *
 	 * @return true if <tt>MyDeque</tt> is empty
 	 */
@@ -90,8 +94,9 @@ public class MyDeque<E> implements IDeque<E> {
 		return size == 0;
 	}
 
-	/**
+	/**Returns the value at the front of the deque
 	 * @return the value of the <tt>Node</tt> at the Front
+	 * Throws a NoSuchElementException if the deque is empty
 	 */
 	public E getFirst() {
 		if (this.isEmpty()) {
@@ -100,9 +105,7 @@ public class MyDeque<E> implements IDeque<E> {
 		return head.get();
 	}
 
-	/**
-	 * @return the value of the <tt>Node</tt> at the Back
-	 */
+
 	/** Method was used to unit test, commented out since it's not part of IDeque
 	public E getLast() {
 		return tail.get();
@@ -123,9 +126,9 @@ public class MyDeque<E> implements IDeque<E> {
 		//getLast() was used for unit test, not part of IDeque		System.out.println(deck.getLast() == 1);
 		deck.addLast(9);
 		//getLast() was used for unit test, not part of IDeque		System.out.println(deck.getLast() == 9);
-		for (int i = 0; i < 5; i++) {
-			System.out.println(deck.removeFirst());
-		}
+//		for (int i = 0; i < 5; i++) {
+	//		System.out.println(deck.removeFirst());
+	//	}
 	}
 }
 
