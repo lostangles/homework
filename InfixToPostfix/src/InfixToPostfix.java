@@ -1,7 +1,3 @@
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 /**
  * <tt>InfixToPostfix</tt> is a class that parses a standard mathematical
  * argument into a "post fix" state that is much easier to work with for
@@ -13,6 +9,11 @@ import java.util.LinkedList;
  * @author Brandon Byrne
  * @version Mar 14, 2015
  */
+
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 public class InfixToPostfix implements Iterable<String> {
 
 	private Deque<String> postfix = new LinkedList<String>(); // Used as a queue
@@ -35,6 +36,8 @@ public class InfixToPostfix implements Iterable<String> {
 		parse(infix);
 	}
 
+	// Tests for: mismatched ()'s, incorrect number of (), order of (), valid
+	// arguments(a-z, 0-9, math operators)
 	private void testArgs(String infix) {
 		int numOpen = 0;
 		int numClose = 0;
@@ -46,6 +49,9 @@ public class InfixToPostfix implements Iterable<String> {
 				numClose++;
 			}
 			if (!validArgs.contains(test + "")) {
+				throw new IllegalArgumentException();
+			}
+			if (numClose > numOpen) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -67,13 +73,14 @@ public class InfixToPostfix implements Iterable<String> {
 
 	private void parse(String infix) {
 		String token = "";
-		infix = "(" + infix + ")"; // cheap hack that helps/fixes that pesky null pointer when
-								   // popping opstack at the end of the parse
+		infix = "(" + infix + ")"; // cheap hack that helps/fixes that pesky
+									// null pointer when
+									// popping opstack at the end of the parse
 		for (int i = 0; i < infix.length(); i++) {
 			String currChar = infix.charAt(i) + "";
 
 			if (!operators.contains(currChar)) { // If number, put it in the
-												// postfix stack
+													// postfix stack
 				if (!currChar.equals(" ")) {
 					token = token + currChar;
 				}
@@ -81,11 +88,11 @@ public class InfixToPostfix implements Iterable<String> {
 
 			else if (operators.contains(currChar)) {
 				if (!(token.length() == 0)) { // If token is not empty, drop the
-												// number off at postfix
-												// Reset token for next number
-					if (opStack.peek() == "^") {
-						postfix.addLast(opStack.pop());
-					}
+					// number off at postfix
+					// Reset token for next number
+					//if (opStack.peek() == "^") {
+					//	postfix.addLast(opStack.pop());
+					//}
 					postfix.addLast(token);
 					token = "";
 				}
@@ -101,21 +108,21 @@ public class InfixToPostfix implements Iterable<String> {
 								|| opStack.peek().equals("%")
 								|| opStack.peek().equals("^")) {
 
-							if (opStack.peek() == "^") {
+							//if (opStack.peek() == "^") {
 								postfix.addLast(opStack.pop());
-							} else {
-								postfix.addLast(opStack.pop());
-							}
+							//} //else {
+								//postfix.addLast(opStack.pop());
+							//}
 						}
 					}
 					opStack.addFirst(currChar);
 				}
 				if (currChar.equals("+") || currChar.equals("-")) {
-					if (!(opStack.isEmpty())) {
-						if (opStack.peek() == "^") {
-							postfix.addLast(opStack.pop());
-						}
-					}
+					//if (!(opStack.isEmpty())) {
+						//if (opStack.peek() == "^") {
+							//postfix.addLast(opStack.pop());
+						//}
+					//}
 					while (opStack.peek().equals("+")
 							|| opStack.peek().equals("-")
 							|| opStack.peek().equals("*")
@@ -123,11 +130,11 @@ public class InfixToPostfix implements Iterable<String> {
 							|| opStack.peek().equals("%")
 							|| opStack.peek().equals("^")) {
 
-						if (opStack.peek() == "^") {
+						//if (opStack.peek() == "^") {
 							postfix.addLast(opStack.pop());
-						} else {
-							postfix.addLast(opStack.pop());
-						}
+						//} else {
+						//	postfix.addLast(opStack.pop());
+						//}
 					}
 					opStack.addFirst(currChar);
 				}
@@ -172,7 +179,7 @@ public class InfixToPostfix implements Iterable<String> {
 			InfixToPostfix test3 = new InfixToPostfix("$%#(&$*(@");
 		} catch (IllegalArgumentException e) {
 			System.out
-					.println("true - reject invalid args - IllegalArgumentException thrown");
+			.println("true - reject invalid args - IllegalArgumentException thrown");
 		} catch (Exception e) {
 			System.out.println("false - Wrong exception type thrown");
 		}
@@ -182,7 +189,7 @@ public class InfixToPostfix implements Iterable<String> {
 			InfixToPostfix test3 = new InfixToPostfix("(4+5+3))");
 		} catch (IllegalArgumentException e) {
 			System.out
-					.println("true - # of () mismatch - IllegalArgumentException thrown");
+			.println("true - # of () mismatch - IllegalArgumentException thrown");
 		} catch (Exception e) {
 			System.out.println("false - Wrong exception type thrown");
 		}
