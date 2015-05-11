@@ -45,8 +45,8 @@ public class GUI {
 		JButton EqlButton = new JButton("=");
 		JButton mod = new JButton("%");
 		JButton exp = new JButton("^");
-		JButton blank = new JButton("");
-		JButton blank2 = new JButton("");
+		JButton blank = new JButton(")");
+		JButton blank2 = new JButton("(");
 
 		// layout
 		frame.add(nLabel, BorderLayout.NORTH);
@@ -97,6 +97,8 @@ public class GUI {
 		ClrButton.addActionListener(listen);
 		mod.addActionListener(listen);
 		exp.addActionListener(listen);
+		blank.addActionListener(listen);
+		blank2.addActionListener(listen);
 
 		frame.setVisible(true);
 	}
