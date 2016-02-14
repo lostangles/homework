@@ -54,10 +54,13 @@ public class Strassen {
 		int size = 4;
 		Matrix a = new Matrix(array, size);
 		Matrix b = new Matrix(array, size);
+		System.out.println("Matrix a:");
 		a.printMatrix();
+		System.out.println("Matrix b:");
 		b.printMatrix();
 		
 		Matrix c = Strassen(a,b,4);
+		System.out.println("Matrix a x b using strassen algorithm:");
 		c.printMatrix();
 	}
 
