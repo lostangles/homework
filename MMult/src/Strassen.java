@@ -1,3 +1,7 @@
+//CSC130 - Assignment 1
+//Brandon Byrne
+//February 19 - 2016
+//Implements matrix multiplication using Strassen's algorithm.
 
 public class Strassen {
 
