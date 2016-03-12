@@ -9,24 +9,17 @@ public class AVLNode {
 
 	AVLNode(Object data) {
 		this.setData(data);
-		this.setHeight(0);
+		this.height = 0;
 	}
 
 	AVLNode() {
-		this.setHeight(-1);
+		this.height = -1;
 	}
 
 	void setData(Object data) {
 		this.data = data;
 	}
 
-	void setLeft(AVLNode setleft) {
-		this.left = setleft;
-	}
-
-	void setRight(AVLNode setright) {
-		this.right = setright;
-	}
 
 	int findHeight(AVLNode node) {
 		if (node == null) {
@@ -35,17 +28,15 @@ public class AVLNode {
 			return Math.max(findHeight(node.left), findHeight(node.right)) + 1;
 	}
 
-	void setHeight(int height) {
-		this.height = height;
-	}
+
 
 	AVLNode rotateLeft(AVLNode k2) {
 		AVLNode k1 = k2.left;
 		k2.left = k1.right;
 		k1.right = k2;
 
-		k2.setHeight(Math.max(findHeight(k2.left), findHeight(k2.right)) + 1);
-		k1.setHeight(Math.max(findHeight(k1.left), findHeight(k1.right)) + 1);
+		k2.height = (Math.max(findHeight(k2.left), findHeight(k2.right)) + 1);
+		k1.height = (Math.max(findHeight(k1.left), findHeight(k1.right)) + 1);
 
 		return k1;
 	}
@@ -55,8 +46,8 @@ public class AVLNode {
 		k1.right = k2.left;
 		k2.left = k1;
 
-		k1.setHeight(Math.max(findHeight(k1.left), findHeight(k1.right)) + 1);
-		k2.setHeight(Math.max(findHeight(k2.left), findHeight(k2.right)) + 1);
+		k1.height = (Math.max(findHeight(k1.left), findHeight(k1.right)) + 1);
+		k2.height = (Math.max(findHeight(k2.left), findHeight(k2.right)) + 1);
 
 		return k2;
 
@@ -79,9 +70,8 @@ public class AVLNode {
 		}
 
 		else if ((int) data < (int) node.data) {
-			node.setLeft(insert(node.left, data));
-			node.setHeight(
-					Math.max(findHeight(node.left), findHeight(node.right)) + 1);
+			node.left = insert(node.left, data);
+			
 			if (Math.abs(findHeight(node.right) - findHeight(node.left)) == 2)
 				if ((node.left != null ) && (int)data < (int)node.left.data) {
 				node = rotateLeft(node);
@@ -89,10 +79,9 @@ public class AVLNode {
 			else {
 				node = doubleLeft(node);
 			}
-		} else {
-			node.setRight(insert(node.right, data));
-			node.setHeight(
-					Math.max(findHeight(node.left), findHeight(node.right)) + 1);
+		} else if ((int) data > (int) node.data) {
+			node.right = insert(node.right, data);
+			
 			if (Math.abs(findHeight(node.left) - findHeight(node.right)) == 2)
 				if ((node.right != null ) && (int)data > (int)node.right.data) {
 				node = rotateRight(node);
@@ -101,29 +90,29 @@ public class AVLNode {
 				node = doubleRight(node);
 			}
 		}
+		else if ((int)data == (int)node.data)
+			;
+	
+			
 
-		
+		node.height = (
+				Math.max(findHeight(node.left), findHeight(node.right)) + 1);
 
 		return node;
 	}
 
 	public static void main(String[] args) {
-
-		AVLNode tree = new AVLNode(6);
-		tree = tree.insert(tree, 2);
-		tree = tree.insert(tree, 8);
-		tree = tree.insert(tree, 14);
-		tree = tree.insert(tree, 4);
-		tree = tree.insert(tree, 7);
-		tree = tree.insert(tree, 3);
-		tree = tree.insert(tree, 9);
-		tree = tree.insert(tree, 10);
-		tree = tree.insert(tree, 11);
-		tree = tree.insert(tree, 12);
-		tree = tree.insert(tree, 13);
-		tree = tree.insert(tree, 14);
-		tree = tree.insert(tree, 15);
-		tree = tree.insert(tree, 16);
+		int sampleSize = 100;
+		AVLNode tree = new AVLNode(1);
+		
+		int[] array = new int [sampleSize];
+		for (int i = 0; i < sampleSize; i++) {
+			array[i] = (int)(Math.random() * sampleSize + 1 );
+		}
+		
+		for (int i = 0;i<sampleSize;i++) {
+			tree = tree.insert(tree, array[i])
+		}
 
 	}
 
